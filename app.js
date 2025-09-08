@@ -67,9 +67,9 @@ btns.forEach((button) => {
                 let operators = display.value;
 
                 // Convert symbols for JS before evaluation//
-                operators = operators.replace(/x/g, "*"); 
-                operators = operators.replace(/\^/g, "**");  
-                operators = operators.replace(/%/g, "/100");  
+                operators = operators.replace(/x/g, "*");
+                operators = operators.replace(/\^/g, "**");
+                operators = operators.replace(/%/g, "/100");
 
 
                 display.value = eval(operators);
@@ -82,7 +82,7 @@ btns.forEach((button) => {
         else if (button.classList.contains("operation")) {
             //validations//
 
-            
+
             if (display.value === "") {
                 return;
             }
