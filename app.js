@@ -1,76 +1,66 @@
 const btns = document.querySelectorAll(".buttons button");
 const display = document.querySelector("form input");
 
+// convert degree to radian
 function degToRad(deg) {
     return deg * (Math.PI / 180);
 }
+
+// always show 0 and cursor when page loads
+window.onload = () => {
+    display.value = "0";   // show 0 initially
+    display.focus();       // keep cursor active
+};
 
 btns.forEach((button) => {
     button.addEventListener("click", (e) => {
         e.preventDefault();
 
-        //get all values on the buttons//
         const val = button.textContent;
 
-
+        // numbers or brackets
         if (button.classList.contains("number") || button.classList.contains("bracket")) {
-            //show on the screen while clicking on it//
-            display.value += val;
+            if (display.value === "0") {
+                display.value = val; // replace initial 0
+            } else {
+                display.value += val; // append normally
+            }
         }
 
-
+        // clear last character
         else if (button.classList.contains("clear")) {
             display.value = display.value.slice(0, -1);
+            if (display.value === "") display.value = "0"; // never empty
         }
 
-
-
+        // clear all
         else if (button.classList.contains("allclear")) {
-            display.value = "";
+            display.value = "0";
         }
 
-
+        // operators
         else if (button.classList.contains("operator")) {
+            if (display.value === "0") return; // don't start with operator
 
-            //display the operators on the display screen//
-
-            //these operators not understand directly by the JS//
-            //so we replace them with their actuall symbols//
-            //which JS understand we replace them later while eval/
             if (val === "x") {
                 display.value += "x";
-            }
-            else if (val === "^") {
+            } else if (val === "^") {
                 display.value += "^";
-            }
-            else if (val === "%") {
+            } else if (val === "%") {
                 display.value += "%";
+            } else if (["+", "-", "/"].includes(val)) {
+                display.value += val;
             }
-
-            //these  operators understand JS automatically//
-            else if (val === "+") {
-                display.value += "+";
-            }
-            else if (val === "-") {
-                display.value += "-";
-            }
-            else if (val === "/") {
-                display.value += "/";
-            }
-
-
         }
 
+        // equal
         else if (button.classList.contains("Equal")) {
             try {
-
                 let operators = display.value;
 
-                // Convert symbols for JS before evaluation//
                 operators = operators.replace(/x/g, "*");
                 operators = operators.replace(/\^/g, "**");
                 operators = operators.replace(/%/g, "/100");
-
 
                 display.value = eval(operators);
             } catch {
@@ -78,16 +68,12 @@ btns.forEach((button) => {
             }
         }
 
-
+        // trig operations
         else if (button.classList.contains("operation")) {
-            //validations//
-
-
-            if (display.value === "") {
+            if (display.value === "" || display.value === "0") {
                 return;
             }
             const num = parseFloat(display.value);
-            //if not a number do nothing//
             if (isNaN(num)) {
                 return;
             }
@@ -102,5 +88,9 @@ btns.forEach((button) => {
                 display.value = Math.tan(degToRad(num)).toFixed(4);
             }
         }
+
+        // keep cursor at the end always
+        display.focus();
+        display.setSelectionRange(display.value.length, display.value.length);
     });
 });
